@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aplicaciones</string>
+    <string name="imgDescripcion">Image description</string>
+    <string name="img_desc">Leon</string>
+    <string name="materia">Mobile applications</string>
+    <string name="principalScreen">Start</string>
+    <string name="back">Back</string>
+    <string name="bottom_app_bar">navigation info</string>
+    <string name="home_fab_text">Add</string>
+    <string name="nombre">Jose Guadalupe</string>
+    <string name="apellido">Garcia Castorena</string>
+</resources>
