@@ -1,6 +1,9 @@
 package com.example.aplicaciones
 
+import android.nfc.Tag
 import android.os.Bundle
+import android.os.Message
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -53,14 +56,59 @@ import com.example.aplicaciones.ui.theme.AplicacionesTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+
+    private val TAG = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        ShowToast("FUNCION oncreate()")
+
         enableEdgeToEdge()
         setContent {
             AplicacionesTheme {
                 ViewContainer()
             }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        ShowToast("FUNCION onstart()")
+
+    }
+
+    // onResume
+    override fun onResume() {
+        super.onResume()
+        ShowToast("FUNCION onresume()")
+    }
+
+    // onPause
+    override fun onPause() {
+        super.onPause()
+        ShowToast("FUNCION onpause()")
+    }
+
+    // onStop
+    override fun onStop() {
+        super.onStop()
+        ShowToast("FUNCION onstop()")
+    }
+
+    // onDestroy
+    override fun onDestroy() {
+        super.onDestroy()
+        ShowToast("FUNCION ondestroy()")
+    }
+
+    fun ShowToast(message : String) {
+        val toast = Toast.makeText(
+            this,
+            message,
+            Toast.LENGTH_LONG
+        )
+        toast.show()
+        Log.i(TAG, message)
     }
 }
 
