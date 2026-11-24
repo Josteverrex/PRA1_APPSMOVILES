@@ -10,4 +10,8 @@
     <string name="home_fab_text">Ajouter</string>
     <string name="nombre">Jose Guadalupe</string>
     <string name="apellido">Garcia Castorena</string>
+    <string name="options_menu">Options</string>
+    <string name="profile">Profil</string>
+    <string name="config">Configuration</string>
+    <string name="logout">Déconnexion</string>
 </resources>

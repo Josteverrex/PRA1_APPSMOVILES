@@ -1,12 +1,19 @@
 <resources>
-    <string name="app_name" translatable="false">Aplicaciones</string>
+    <string name="app_name">Aplicaciones</string>
     <string name="imgDescripcion">Descripción de la imagen</string>
     <string name="img_desc">Leon</string>
     <string name="materia">Aplicaciones moviles</string>
     <string name="principalScreen">Inicio</string>
-    <string name="back" translatable="false">Atrás</string>
+    <string name="back">Atrás</string>
     <string name="bottom_app_bar">navegacion inf</string>
     <string name="home_fab_text">Agregar</string>
-    <string name="nombre">Jose Guadalupe</string>
-    <string name="apellido">Garcia Castorena</string>
+    <string name="nombre" translatable="false">Jose Guadalupe</string>
+    <string name="apellido" translatable="false">Garcia Castorena</string>
+
+    <string name="options_menu">Opciones</string>
+    <string name="profile">Perfil</string>
+    <string name="config">Configuracion</string>
+    <string name="logout">Cerrar sesion</string>
+    <string name="title_activity_second">SecondActivity</string>
+
 </resources>

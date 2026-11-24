@@ -2,4 +2,14 @@
 <resources>
 
     <style name="Theme.Aplicaciones" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/red</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@drawable/play_store_512</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.Aplicaciones</item>
+    </style>
+
 </resources>

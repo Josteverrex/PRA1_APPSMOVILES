@@ -1,5 +1,10 @@
 package com.example.aplicaciones
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.ContactsContract
+import android.provider.Settings
 import android.nfc.Tag
 import android.os.Bundle
 import android.os.Message
@@ -12,6 +17,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,10 +29,23 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Bluetooth
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -39,6 +58,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,14 +72,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.lifecycleScope
 import com.example.aplicaciones.ui.theme.AplicacionesTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
+
+private const val TAG = "MainActivity"
 
 class MainActivity : ComponentActivity() {
 
-    private val TAG = "MainActivity"
+    private var keepSplash = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen= installSplashScreen()
+        splashScreen.setKeepOnScreenCondition { keepSplash }
+
+
+        lifecycleScope.launch {
+            delay(3000.milliseconds)
+            keepSplash = false
+        }
+
+
         super.onCreate(savedInstanceState)
 
         ShowToast("FUNCION oncreate()")
@@ -118,6 +154,9 @@ fun ViewContainer() {
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
@@ -140,9 +179,30 @@ fun ViewContainer() {
                             tint = Color.White
                         )
                     }
+                },
+                actions = {
+
+                    IconButton(onClick = { openWebScreen(context) }) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = "Marcar como favorito",
+                            tint = Color.White
+                        )
+
+                    }
+                    IconButton(onClick = { openSecondActivity(context) }) {
+                        Icon(
+                            imageVector = Icons.Default.AttachMoney,
+                            contentDescription = "Second Activity",
+                            tint = Color.White
+                        )
+                    }
+
+                 DropDownMenu()
                 }
             )
         },
+
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.secondary,
@@ -183,6 +243,117 @@ fun ViewContainer() {
         ContentView(modifier = Modifier.padding(innerPadding))
     }
 }
+fun openWebScreen(context: Context) {
+    val url = Uri.parse("https://aguascalientes.tecnm.mx/")
+    val intent = Intent(Intent.ACTION_VIEW, url)
+
+    try {
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error en openWebScreen", e)
+    }
+}
+
+fun openSecondActivity(context: Context) {
+    try {
+        val intent = Intent(context, SecondActivity::class.java)
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error en openSecondActivity", e)
+    }
+}
+
+@Composable
+fun DropDownMenu() {
+    var expanded by remember { mutableStateOf(false) }
+    var context = LocalContext.current
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(R.string.options_menu),
+                tint= Color.White
+            )
+        }
+
+        DropdownMenu (
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.profile)) },
+                onClick = {
+                    expanded = false
+                    // Acción para llamada
+                    openCall(context)
+                },
+                leadingIcon = {
+                    Icon(Icons.Default.Call, contentDescription = null)
+                }
+            )
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.config)) },
+                onClick = {
+                    expanded = false
+                    // Acción para bluetooth
+                    openBluetooth(context)
+                },
+                leadingIcon = {
+                    Icon(Icons.Default.Bluetooth, contentDescription = null)
+                }
+            )
+
+            HorizontalDivider()
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.logout)) },
+                onClick = {
+                    expanded = false
+                    // Acción para Contactos
+                    openContacts(context)
+
+                },
+                leadingIcon = {
+                    Icon(Icons.Default.Contacts, contentDescription = null)
+                }
+            )
+        }
+    }
+}
+
+fun openCall(context: Context) {
+    try {
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:4651502837")
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error en openCall" + e)
+    }
+}
+
+fun openBluetooth(context: Context) {
+    try {
+        val intent = Intent(Settings.ACTION_BLUETOOTH_SETTINGS)
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error en openBluetooth" + e)
+    }
+}
+
+fun openContacts(context: Context) {
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_URI)
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error en openContacts" + e)
+    }
+}
+
+
+
+
 
 @Composable
 fun ContentView(modifier: Modifier = Modifier) {
